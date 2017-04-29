@@ -33,6 +33,13 @@
 static QList<QString> URLS;
 static QList<Updater*> UPDATERS;
 
+extern int qInitResources_qsimpleupdater();
+
+QSimpleUpdater::QSimpleUpdater()
+{
+    qInitResources_qsimpleupdater();
+}
+
 QSimpleUpdater::~QSimpleUpdater()
 {
     URLS.clear();

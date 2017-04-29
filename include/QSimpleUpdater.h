@@ -102,6 +102,7 @@ public slots:
     void setUseCustomInstallProcedures (const QString& url, const bool custom);
 
 protected:
+    QSimpleUpdater();
     ~QSimpleUpdater();
 
 private:
