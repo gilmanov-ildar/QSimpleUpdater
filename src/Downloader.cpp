@@ -40,7 +40,6 @@
 #include "Downloader.h"
 
 static const QString PARTIAL_DOWN (".part");
-static const QDir DOWNLOAD_DIR (QDir::homePath() + "/Downloads/");
 
 Downloader::Downloader (QWidget* parent) : QWidget (parent)
 {
@@ -117,12 +116,12 @@ void Downloader::startDownload (const QUrl& url)
     m_reply = m_manager->get (QNetworkRequest (url));
 
     /* Ensure that downloads directory exists */
-    if (!DOWNLOAD_DIR.exists())
-        DOWNLOAD_DIR.mkpath (".");
+    if (!m_downloadDir.exists())
+        m_downloadDir.mkpath (".");
 
     /* Remove old downloads */
-    QFile::remove (DOWNLOAD_DIR.filePath (m_fileName));
-    QFile::remove (DOWNLOAD_DIR.filePath (m_fileName + PARTIAL_DOWN));
+    QFile::remove (m_downloadDir.filePath (m_fileName));
+    QFile::remove (m_downloadDir.filePath (m_fileName + PARTIAL_DOWN));
 
     /* Update UI when download progress changes or download finishes */
     connect (m_reply, SIGNAL (downloadProgress (qint64, qint64)),
@@ -152,7 +151,7 @@ void Downloader::setFileName (const QString& file)
 void Downloader::openDownload()
 {
     if (!m_fileName.isEmpty())
-        QDesktopServices::openUrl (QUrl::fromLocalFile (DOWNLOAD_DIR.filePath (
+        QDesktopServices::openUrl (QUrl::fromLocalFile (m_downloadDir.filePath (
                 m_fileName)));
 
     else {
@@ -245,7 +244,7 @@ void Downloader::saveFile (qint64 received, qint64 total)
     }
 
     /* Save downloaded data to disk */
-    QFile file (DOWNLOAD_DIR.filePath (m_fileName + PARTIAL_DOWN));
+    QFile file (m_downloadDir.filePath (m_fileName + PARTIAL_DOWN));
     if (file.open (QIODevice::WriteOnly | QIODevice::Append)) {
         file.write (m_reply->readAll());
         file.close();
@@ -254,11 +253,11 @@ void Downloader::saveFile (qint64 received, qint64 total)
     /* Open downloaded update */
     if (received >= total && total > 0) {
         /* Rename file */
-        QFile::rename (DOWNLOAD_DIR.filePath (m_fileName + PARTIAL_DOWN),
-                       DOWNLOAD_DIR.filePath (m_fileName));
+        QFile::rename (m_downloadDir.filePath (m_fileName + PARTIAL_DOWN),
+                       m_downloadDir.filePath (m_fileName));
 
         /* Notify application */
-        emit downloadFinished (m_url, DOWNLOAD_DIR.filePath (m_fileName));
+        emit downloadFinished (m_url, m_downloadDir.filePath (m_fileName));
 
         /* Install the update */
         m_reply->close();
@@ -382,6 +381,18 @@ void Downloader::calculateTimeRemaining (qint64 received, qint64 total)
 qreal Downloader::round (const qreal& input)
 {
     return roundf (input * 100) / 100;
+}
+
+QString Downloader::downloadDir() const
+{
+    return m_downloadDir.absolutePath();
+}
+
+void Downloader::setDownloadDir(const QString& downloadDir)
+{
+    if(m_downloadDir.absolutePath() != downloadDir) {
+        m_downloadDir = downloadDir;
+    }
 }
 
 /**

@@ -71,6 +71,9 @@ public:
     bool downloaderEnabled() const;
     bool useCustomInstallProcedures() const;
 
+    QString downloadDir() const;
+    void setDownloadDir(const QString& downloadDir);
+
 public slots:
     void checkForUpdates();
     void setUrl (const QString& url);

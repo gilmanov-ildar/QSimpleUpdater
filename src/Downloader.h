@@ -30,6 +30,7 @@
 #ifndef DOWNLOAD_DIALOG_H
 #define DOWNLOAD_DIALOG_H
 
+#include <QDir>
 #include <QDialog>
 #include <ui_Downloader.h>
 
@@ -56,6 +57,9 @@ public:
 
     bool useCustomInstallProcedures() const;
 
+    QString downloadDir() const;
+    void setDownloadDir(const QString& downloadDir);
+
 public slots:
     void setUrlId (const QString& url);
     void startDownload (const QUrl& url);
@@ -75,6 +79,7 @@ private:
     qreal round (const qreal& input);
 
 private:
+    QDir m_downloadDir;
     QString m_url;
     uint m_startTime;
     QString m_fileName;

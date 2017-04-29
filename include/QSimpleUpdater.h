@@ -90,6 +90,9 @@ public:
     QString getLatestVersion (const QString& url) const;
     QString getModuleVersion (const QString& url) const;
 
+    QString downloadDir(const QString& url) const;
+    void setDownloadDir(const QString& url, const QString& downloadDir);
+
 public slots:
     void checkForUpdates (const QString& url);
     void setModuleName (const QString& url, const QString& name);

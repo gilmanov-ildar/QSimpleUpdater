@@ -236,6 +236,16 @@ QString QSimpleUpdater::getModuleVersion (const QString& url) const
     return getUpdater (url)->moduleVersion();
 }
 
+QString QSimpleUpdater::downloadDir(const QString &url) const
+{
+    return getUpdater (url)->downloadDir();
+}
+
+void QSimpleUpdater::setDownloadDir(const QString &url, const QString &downloadDir)
+{
+    getUpdater (url)->setDownloadDir(downloadDir);
+}
+
 /**
  * Instructs the \c Updater instance with the registered \c url to download and
  * interpret the update definitions file.

@@ -215,6 +215,16 @@ bool Updater::useCustomInstallProcedures() const
     return m_downloader->useCustomInstallProcedures();
 }
 
+QString Updater::downloadDir() const
+{
+    return m_downloader->downloadDir();
+}
+
+void Updater::setDownloadDir(const QString& downloadDir)
+{
+    m_downloader->setDownloadDir(downloadDir);
+}
+
 /**
  * Downloads and interpets the update definitions file referenced by the
  * \c url() function.
