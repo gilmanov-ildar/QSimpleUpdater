@@ -27,5 +27,8 @@
 # Fix the problem yourself. A non-dick would submit the fix back.
 
 TEMPLATE = lib
-DEFINES += QSU_SHARED
+DEFINES += QSU_IMPORT
+
+CONFIG += staticlib
+
 include ($$PWD/QSimpleUpdater.pri)
