@@ -27,7 +27,12 @@
 # Fix the problem yourself. A non-dick would submit the fix back.
 
 TEMPLATE = lib
-DEFINES += QSU_IMPORT
+
+windows {
+    DEFINES += QSU_SHARED
+} else {
+    DEFINES += QSU_IMPORT
+}
 
 CONFIG += staticlib
 
