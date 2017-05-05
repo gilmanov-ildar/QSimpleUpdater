@@ -73,6 +73,7 @@ private slots:
     void saveFile (qint64 received, qint64 total);
     void calculateSizes (qint64 received, qint64 total);
     void updateProgress (qint64 received, qint64 total);
+    void finished ();
     void calculateTimeRemaining (qint64 received, qint64 total);
 
 private:

@@ -126,6 +126,8 @@ void Downloader::startDownload (const QUrl& url)
     /* Update UI when download progress changes or download finishes */
     connect (m_reply, SIGNAL (downloadProgress (qint64, qint64)),
              this,      SLOT (updateProgress   (qint64, qint64)));
+    connect (m_reply, SIGNAL (finished ()),
+             this,      SLOT (finished ()));
     connect (m_reply, SIGNAL (redirected       (QUrl)),
              this,      SLOT (startDownload    (QUrl)));
 
@@ -235,6 +237,9 @@ void Downloader::cancelDownload()
  */
 void Downloader::saveFile (qint64 received, qint64 total)
 {
+    Q_UNUSED(received);
+    Q_UNUSED(total);
+
     /* Check if we need to redirect */
     QUrl url = m_reply->attribute (
                    QNetworkRequest::RedirectionTargetAttribute).toUrl();
@@ -248,20 +253,6 @@ void Downloader::saveFile (qint64 received, qint64 total)
     if (file.open (QIODevice::WriteOnly | QIODevice::Append)) {
         file.write (m_reply->readAll());
         file.close();
-    }
-
-    /* Open downloaded update */
-    if (received >= total && total > 0) {
-        /* Rename file */
-        QFile::rename (m_downloadDir.filePath (m_fileName + PARTIAL_DOWN),
-                       m_downloadDir.filePath (m_fileName));
-
-        /* Notify application */
-        emit downloadFinished (m_url, m_downloadDir.filePath (m_fileName));
-
-        /* Install the update */
-        m_reply->close();
-        installUpdate();
     }
 }
 
@@ -324,6 +315,21 @@ void Downloader::updateProgress (qint64 received, qint64 total)
                                   .arg (tr ("Time Remaining"))
                                   .arg (tr ("Unknown")));
     }
+}
+
+void Downloader::finished()
+{
+    /* Rename file */
+    QFile::rename (m_downloadDir.filePath (m_fileName + PARTIAL_DOWN),
+                   m_downloadDir.filePath (m_fileName));
+
+    /* Notify application */
+    emit downloadFinished (m_url, m_downloadDir.filePath (m_fileName));
+
+    /* Install the update */
+    m_reply->close();
+    installUpdate();
+    setVisible(false);
 }
 
 /**
